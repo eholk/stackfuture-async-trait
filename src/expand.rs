@@ -153,7 +153,7 @@ fn lint_suppress_without_body() -> Attribute {
 //         T: 'async_trait,
 //         Self: Sync + 'async_trait;
 fn transform_sig(
-    context: Context,
+    context: Context<'_>,
     sig: &mut Signature,
     has_self: bool,
     has_default: bool,
@@ -312,7 +312,7 @@ fn transform_sig(
 //
 //         ___ret
 //     })
-fn transform_block(context: Context, sig: &mut Signature, block: &mut Block) {
+fn transform_block(context: Context<'_>, sig: &mut Signature, block: &mut Block) {
     if let Some(Stmt::Item(syn::Item::Verbatim(item))) = block.stmts.first() {
         if block.stmts.len() == 1 && item.to_string() == ";" {
             return;
@@ -420,7 +420,7 @@ fn has_bound(supertraits: &Supertraits, marker: &Ident) -> bool {
     false
 }
 
-fn contains_associated_type_impl_trait(context: Context, ret: &mut Type) -> bool {
+fn contains_associated_type_impl_trait(context: Context<'_>, ret: &mut Type) -> bool {
     struct AssociatedTypeImplTraits<'a> {
         set: &'a Set<Ident>,
         contains: bool,

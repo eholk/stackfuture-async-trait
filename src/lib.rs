@@ -314,8 +314,7 @@
     clippy::similar_names,
     clippy::too_many_lines
 )]
-
-extern crate proc_macro;
+#![deny(rust_2018_idioms)]
 
 mod args;
 mod expand;

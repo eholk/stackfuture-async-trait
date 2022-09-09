@@ -12,7 +12,7 @@ mod kw {
 }
 
 impl Parse for Args {
-    fn parse(input: ParseStream) -> Result<Self> {
+    fn parse(input: ParseStream<'_>) -> Result<Self> {
         match try_parse(input) {
             Ok(args) if input.is_empty() => Ok(args),
             _ => Err(error()),
@@ -20,7 +20,7 @@ impl Parse for Args {
     }
 }
 
-fn try_parse(input: ParseStream) -> Result<Args> {
+fn try_parse(input: ParseStream<'_>) -> Result<Args> {
     if input.peek(Token![?]) {
         input.parse::<Token![?]>()?;
         input.parse::<kw::Send>()?;

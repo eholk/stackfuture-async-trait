@@ -12,7 +12,7 @@
     clippy::unused_async
 )]
 
-use async_trait::async_trait;
+use stackfuture_async_trait::async_trait;
 
 pub mod executor;
 
@@ -235,7 +235,7 @@ pub async fn test_unimplemented() {
 
 // https://github.com/dtolnay/async-trait/issues/1
 pub mod issue1 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     #[async_trait]
     trait Issue1 {
@@ -250,7 +250,7 @@ pub mod issue1 {
 
 // https://github.com/dtolnay/async-trait/issues/2
 pub mod issue2 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
     use std::future::Future;
 
     #[async_trait]
@@ -268,7 +268,7 @@ pub mod issue2 {
 
 // https://github.com/dtolnay/async-trait/issues/9
 pub mod issue9 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     #[async_trait]
     pub trait Issue9: Sized + Send {
@@ -278,7 +278,7 @@ pub mod issue9 {
 
 // https://github.com/dtolnay/async-trait/issues/11
 pub mod issue11 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
     use std::sync::Arc;
 
     #[async_trait]
@@ -296,7 +296,7 @@ pub mod issue11 {
 
 // https://github.com/dtolnay/async-trait/issues/15
 pub mod issue15 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
     use std::marker::PhantomData;
 
     trait Trait {}
@@ -309,7 +309,7 @@ pub mod issue15 {
 
 // https://github.com/dtolnay/async-trait/issues/17
 pub mod issue17 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     #[async_trait]
     trait Issue17 {
@@ -330,7 +330,7 @@ pub mod issue17 {
 
 // https://github.com/dtolnay/async-trait/issues/23
 pub mod issue23 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     #[async_trait]
     pub trait Issue23 {
@@ -360,7 +360,7 @@ pub mod issue23 {
 #[cfg(async_trait_nightly_testing)]
 pub mod issue25 {
     use crate::executor;
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
     use std::fmt::{Display, Write};
 
     #[async_trait]
@@ -405,7 +405,7 @@ pub mod issue25 {
 
 // https://github.com/dtolnay/async-trait/issues/28
 pub mod issue28 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     struct Str<'a>(&'a str);
 
@@ -444,7 +444,7 @@ pub mod issue28 {
 
 // https://github.com/dtolnay/async-trait/issues/31
 pub mod issue31 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     pub struct Struct<'a> {
         pub name: &'a str,
@@ -463,7 +463,7 @@ pub mod issue31 {
 
 // https://github.com/dtolnay/async-trait/issues/42
 pub mod issue42 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     #[async_trait]
     pub trait Context: Sized {
@@ -482,7 +482,7 @@ pub mod issue42 {
 
 // https://github.com/dtolnay/async-trait/issues/44
 pub mod issue44 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     #[async_trait]
     pub trait StaticWithWhereSelf
@@ -504,7 +504,7 @@ pub mod issue44 {
 // https://github.com/dtolnay/async-trait/issues/45
 pub mod issue45 {
     use crate::executor;
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
     use std::fmt::Debug;
     use std::sync::atomic::{AtomicU64, Ordering};
     use std::sync::{Arc, Mutex};
@@ -640,7 +640,7 @@ pub mod issue45 {
 
 // https://github.com/dtolnay/async-trait/issues/46
 pub mod issue46 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     macro_rules! implement_commands_workaround {
         ($tyargs:tt : $ty:tt) => {
@@ -671,7 +671,7 @@ pub mod issue46 {
 
 // https://github.com/dtolnay/async-trait/issues/53
 pub mod issue53 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     pub struct Unit;
     pub struct Tuple(u8);
@@ -717,7 +717,7 @@ pub mod issue53 {
 #[cfg(async_trait_nightly_testing)]
 pub mod issue57 {
     use crate::executor;
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     #[async_trait]
     trait Trait {
@@ -741,7 +741,7 @@ pub mod issue57 {
 // https://github.com/dtolnay/async-trait/issues/68
 pub mod issue68 {
     #[rustversion::since(1.40)] // procedural macros cannot expand to macro definitions in 1.39.
-    #[async_trait::async_trait]
+    #[stackfuture_async_trait::async_trait]
     pub trait Example {
         async fn method(&self) {
             macro_rules! t {
@@ -756,7 +756,7 @@ pub mod issue68 {
 
 // https://github.com/dtolnay/async-trait/issues/73
 pub mod issue73 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     #[async_trait]
     pub trait Example {
@@ -770,7 +770,7 @@ pub mod issue73 {
 
 // https://github.com/dtolnay/async-trait/issues/81
 pub mod issue81 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     #[async_trait]
     pub trait Trait {
@@ -794,7 +794,7 @@ pub mod issue81 {
 pub mod issue83 {
     #![allow(clippy::needless_arbitrary_self_type)]
 
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     #[async_trait]
     pub trait Trait {
@@ -807,7 +807,7 @@ pub mod issue83 {
 pub mod issue85 {
     #![deny(non_snake_case)]
 
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     #[async_trait]
     pub trait Trait {
@@ -825,7 +825,7 @@ pub mod issue85 {
 
 // https://github.com/dtolnay/async-trait/issues/87
 pub mod issue87 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     #[async_trait]
     pub trait Trait {
@@ -864,7 +864,7 @@ pub mod issue87 {
 pub mod issue89 {
     #![allow(bare_trait_objects)]
 
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     #[async_trait]
     trait Trait {
@@ -889,7 +889,7 @@ pub mod issue89 {
 
 // https://github.com/dtolnay/async-trait/issues/92
 pub mod issue92 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     macro_rules! mac {
         ($($tt:tt)*) => {
@@ -971,7 +971,7 @@ pub mod issue92 {
 
 // https://github.com/dtolnay/async-trait/issues/92#issuecomment-683370136
 pub mod issue92_2 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     macro_rules! mac {
         ($($tt:tt)*) => {
@@ -1000,7 +1000,7 @@ pub mod issue92_2 {
 
 // https://github.com/dtolnay/async-trait/issues/104
 pub mod issue104 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     #[async_trait]
     trait T1 {
@@ -1025,7 +1025,7 @@ pub mod issue104 {
 
 // https://github.com/dtolnay/async-trait/issues/106
 pub mod issue106 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
     use std::future::Future;
 
     #[async_trait]
@@ -1057,7 +1057,7 @@ pub mod issue106 {
 
 // https://github.com/dtolnay/async-trait/issues/110
 pub mod issue110 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
     use std::marker::PhantomData;
 
     #[async_trait]
@@ -1079,7 +1079,7 @@ pub mod issue110 {
 pub mod issue120 {
     #![deny(clippy::trivially_copy_pass_by_ref)]
 
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     #[async_trait]
     trait Trait {
@@ -1094,7 +1094,7 @@ pub mod issue120 {
 
 // https://github.com/dtolnay/async-trait/issues/123
 pub mod issue123 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     #[async_trait]
     trait Trait<T = ()> {
@@ -1112,7 +1112,7 @@ pub mod issue123 {
 
 // https://github.com/dtolnay/async-trait/issues/129
 pub mod issue129 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     #[async_trait]
     pub trait TestTrait {
@@ -1134,7 +1134,7 @@ pub mod issue129 {
 // https://github.com/dtolnay/async-trait/issues/134
 #[cfg(async_trait_nightly_testing)]
 pub mod issue134 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     #[async_trait]
     trait TestTrait {
@@ -1160,7 +1160,7 @@ pub mod issue134 {
 // https://github.com/dtolnay/async-trait/pull/125#pullrequestreview-491880881
 pub mod drop_order {
     use crate::executor;
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
     use std::sync::atomic::{AtomicBool, Ordering};
 
     struct Flagger<'a>(&'a AtomicBool);
@@ -1222,7 +1222,7 @@ pub mod drop_order {
 pub mod issue145 {
     #![deny(clippy::type_complexity)]
 
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     #[async_trait]
     pub trait ManageConnection: Sized + Send + Sync + 'static {
@@ -1237,7 +1237,7 @@ pub mod issue145 {
 pub mod issue147 {
     #![deny(clippy::let_unit_value)]
 
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     pub struct MyType;
 
@@ -1260,7 +1260,7 @@ pub mod issue147 {
 
 // https://github.com/dtolnay/async-trait/issues/149
 pub mod issue149 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     pub struct Thing;
     pub trait Ret {}
@@ -1281,7 +1281,7 @@ pub mod issue149 {
 // https://github.com/dtolnay/async-trait/issues/152
 #[cfg(async_trait_nightly_testing)]
 pub mod issue152 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     #[async_trait]
     trait Trait {
@@ -1304,7 +1304,7 @@ pub mod issue152 {
 pub mod issue154 {
     #![deny(clippy::items_after_statements)]
 
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     #[async_trait]
     pub trait MyTrait {
@@ -1324,7 +1324,7 @@ pub mod issue154 {
 
 // https://github.com/dtolnay/async-trait/issues/158
 pub mod issue158 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     fn f() {}
 
@@ -1339,8 +1339,8 @@ pub mod issue158 {
 // https://github.com/dtolnay/async-trait/issues/161
 #[allow(clippy::mut_mut)]
 pub mod issue161 {
-    use async_trait::async_trait;
     use futures::future::FutureExt;
+    use stackfuture_async_trait::async_trait;
     use std::sync::Arc;
 
     #[async_trait]
@@ -1365,7 +1365,7 @@ pub mod issue161 {
 // https://github.com/dtolnay/async-trait/issues/169
 #[deny(where_clauses_object_safety)]
 pub mod issue169 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     #[async_trait]
     pub trait Trait: ::core::marker::Sync {
@@ -1377,7 +1377,7 @@ pub mod issue169 {
 
 // https://github.com/dtolnay/async-trait/issues/177
 pub mod issue177 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     #[async_trait]
     pub trait Trait {
@@ -1396,7 +1396,7 @@ pub mod issue177 {
 pub mod issue183 {
     #![deny(clippy::shadow_same)]
 
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     #[async_trait]
     trait Foo {
@@ -1406,7 +1406,7 @@ pub mod issue183 {
 
 // https://github.com/dtolnay/async-trait/issues/199
 pub mod issue199 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
     use std::cell::Cell;
 
     struct IncrementOnDrop<'a>(&'a Cell<usize>);
@@ -1443,7 +1443,7 @@ pub mod issue199 {
 
 // https://github.com/dtolnay/async-trait/issues/204
 pub mod issue204 {
-    use async_trait::async_trait;
+    use stackfuture_async_trait::async_trait;
 
     #[async_trait]
     pub trait Trait {

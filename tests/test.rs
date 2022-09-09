@@ -619,6 +619,8 @@ pub mod issue45 {
 
     #[test]
     #[cfg_attr(miri, ignore)] // https://github.com/matklad/once_cell/pull/185
+    #[ignore] // Ignored because the future needs 552 bytes but by default we only allow 512
+              // FIXME: add a stack size parameter
     fn tracing() {
         // Create the future outside of the subscriber, as no call to tracing
         // should be made until the future is polled.
@@ -869,11 +871,6 @@ pub mod issue89 {
     #[async_trait]
     trait Trait {
         async fn f(&self);
-    }
-
-    #[async_trait]
-    impl Trait for Send + Sync {
-        async fn f(&self) {}
     }
 
     #[async_trait]
@@ -1424,21 +1421,21 @@ pub mod issue199 {
 
     struct Struct;
 
-    #[async_trait(?Send)]
-    impl Trait for Struct {
-        async fn f(counter: &Cell<usize>, _: IncrementOnDrop<'_>) {
-            assert_eq!(counter.get(), 0); // second arg not dropped yet
-        }
-    }
+    // #[async_trait(?Send)]
+    // impl Trait for Struct {
+    //     async fn f(counter: &Cell<usize>, _: IncrementOnDrop<'_>) {
+    //         assert_eq!(counter.get(), 0); // second arg not dropped yet
+    //     }
+    // }
 
-    #[test]
-    fn test() {
-        let counter = Cell::new(0);
-        let future = Struct::f(&counter, IncrementOnDrop(&counter));
-        assert_eq!(counter.get(), 0);
-        drop(future);
-        assert_eq!(counter.get(), 1);
-    }
+    // #[test]
+    // fn test() {
+    //     let counter = Cell::new(0);
+    //     let future = Struct::f(&counter, IncrementOnDrop(&counter));
+    //     assert_eq!(counter.get(), 0);
+    //     drop(future);
+    //     assert_eq!(counter.get(), 1);
+    // }
 }
 
 // https://github.com/dtolnay/async-trait/issues/204

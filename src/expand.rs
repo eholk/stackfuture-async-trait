@@ -289,15 +289,9 @@ fn transform_sig(
     }
 
     let ret_span = sig.ident.span();
-    let bounds = if is_local {
-        quote_spanned!(ret_span=> 'async_trait)
-    } else {
-        quote_spanned!(ret_span=> ::core::marker::Send + 'async_trait)
-    };
+    let bounds = quote_spanned!(ret_span=> 'async_trait);
     sig.output = parse_quote_spanned! {ret_span=>
-        -> ::core::pin::Pin<Box<
-            dyn ::core::future::Future<Output = #ret> + #bounds
-        >>
+        -> ::stackfuture::StackFuture<#bounds, #ret, 512>
     };
 }
 
@@ -397,7 +391,7 @@ fn transform_block(context: Context, sig: &mut Signature, block: &mut Block) {
         }
     };
     let box_pin = quote_spanned!(block.brace_token.span=>
-        Box::pin(async move { #let_ret })
+        ::stackfuture::StackFuture::from(async move { #let_ret })
     );
     block.stmts = parse_quote!(#box_pin);
 }

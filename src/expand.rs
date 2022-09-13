@@ -8,7 +8,7 @@ use std::mem;
 use syn::punctuated::Punctuated;
 use syn::visit_mut::{self, VisitMut};
 use syn::{
-    parse_quote, parse_quote_spanned, Attribute, Block, FnArg, GenericParam, Generics, Ident,
+    parse_quote, parse_quote_spanned, Attribute, Block, Expr, FnArg, GenericParam, Generics, Ident,
     ImplItem, Lifetime, LifetimeDef, Pat, PatIdent, Receiver, ReturnType, Signature, Stmt, Token,
     TraitItem, Type, TypeParamBound, TypePath, WhereClause,
 };
@@ -53,7 +53,7 @@ impl Context<'_> {
 
 type Supertraits = Punctuated<TypeParamBound, Token![+]>;
 
-pub fn expand(input: &mut Item, is_local: bool) {
+pub fn expand(input: &mut Item, is_local: bool, stack_size: &Expr) {
     match input {
         Item::Trait(input) => {
             let context = Context::Trait {
@@ -75,7 +75,7 @@ pub fn expand(input: &mut Item, is_local: bool) {
                             method.attrs.push(lint_suppress_without_body());
                         }
                         let has_default = method.default.is_some();
-                        transform_sig(context, sig, has_self, has_default, is_local);
+                        transform_sig(context, sig, has_self, has_default, is_local, stack_size);
                     }
                 }
             }
@@ -108,7 +108,7 @@ pub fn expand(input: &mut Item, is_local: bool) {
                         let block = &mut method.block;
                         let has_self = has_self_in_sig(sig) || has_self_in_block(block);
                         transform_block(context, sig, block);
-                        transform_sig(context, sig, has_self, false, is_local);
+                        transform_sig(context, sig, has_self, false, is_local, stack_size);
                         method.attrs.push(lint_suppress_with_body());
                     }
                 }
@@ -158,6 +158,7 @@ fn transform_sig(
     has_self: bool,
     has_default: bool,
     is_local: bool,
+    stack_size: &Expr,
 ) {
     sig.fn_token.span = sig.asyncness.take().unwrap().span;
 
@@ -291,7 +292,7 @@ fn transform_sig(
     let ret_span = sig.ident.span();
     let bounds = quote_spanned!(ret_span=> 'async_trait);
     sig.output = parse_quote_spanned! {ret_span=>
-        -> ::stackfuture::StackFuture<#bounds, #ret, 512>
+        -> ::stackfuture::StackFuture<#bounds, #ret, #stack_size>
     };
 }
 

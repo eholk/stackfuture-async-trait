@@ -41,20 +41,20 @@
 //! This example implements the core of a highly effective advertising platform
 //! using async fn in a trait.
 //!
-//! The only thing to notice here is that we write an `#[async_trait]` macro on
+//! The only thing to notice here is that we write an `#[async_trait(512)]` macro on
 //! top of traits and trait impls that contain async fn, and then they work.
 //!
 //! ```
-//! use async_trait::async_trait;
+//! use stackfuture_async_trait::async_trait;
 //!
-//! #[async_trait]
+//! #[async_trait(512)]
 //! trait Advertisement {
 //!     async fn run(&self);
 //! }
 //!
 //! struct Modal;
 //!
-//! #[async_trait]
+//! #[async_trait(512)]
 //! impl Advertisement for Modal {
 //!     async fn run(&self) {
 //!         self.render_fullscreen().await;
@@ -69,7 +69,7 @@
 //!     media_url: String,
 //! }
 //!
-//! #[async_trait]
+//! #[async_trait(512)]
 //! impl Advertisement for AutoplayingVideo {
 //!     async fn run(&self) {
 //!         let stream = connect(&self.media_url).await;
@@ -163,11 +163,11 @@
 //! error message.
 //!
 //! ```compile_fail
-//! # use async_trait::async_trait;
+//! # use stackfuture_async_trait::async_trait;
 //! #
 //! type Elided<'a> = &'a usize;
 //!
-//! #[async_trait]
+//! #[async_trait(512)]
 //! trait Test {
 //!     async fn test(not_okay: Elided, okay: &usize) {}
 //! }
@@ -184,16 +184,16 @@
 //! The fix is to name the lifetime or use `'_`.
 //!
 //! ```
-//! # use async_trait::async_trait;
+//! # use stackfuture_async_trait::async_trait;
 //! #
 //! # type Elided<'a> = &'a usize;
 //! #
-//! #[async_trait]
+//! #[async_trait(512)]
 //! trait Test {
 //!     // either
 //!     async fn test<'e>(elided: Elided<'e>) {}
 //! # }
-//! # #[async_trait]
+//! # #[async_trait(512)]
 //! # trait Test2 {
 //!     // or
 //!     async fn test(elided: Elided<'_>) {}
@@ -209,9 +209,9 @@
 //! by value, no associated types, etc.
 //!
 //! ```
-//! # use async_trait::async_trait;
+//! # use stackfuture_async_trait::async_trait;
 //! #
-//! #[async_trait]
+//! #[async_trait(512)]
 //! pub trait ObjectSafe {
 //!     async fn f(&self);
 //!     async fn g(&mut self);
@@ -225,7 +225,7 @@
 //! #
 //! # struct MyType;
 //! #
-//! # #[async_trait]
+//! # #[async_trait(512)]
 //! # impl ObjectSafe for MyType {
 //! #     async fn f(&self) {}
 //! #     async fn g(&mut self) {}
@@ -263,16 +263,16 @@
 //! the default implementations are applicable to them:
 //!
 //! ```
-//! # use async_trait::async_trait;
+//! # use stackfuture_async_trait::async_trait;
 //! #
-//! #[async_trait]
+//! #[async_trait(512)]
 //! pub trait ObjectSafe: Sync {  // added supertrait
 //!     async fn can_dyn(&self) {}
 //! }
 //! #
 //! # struct MyType;
 //! #
-//! # #[async_trait]
+//! # #[async_trait(512)]
 //! # impl ObjectSafe for MyType {}
 //! #
 //! # let value = MyType;
@@ -284,9 +284,9 @@
 //! bounding them with `Self: Sized`:
 //!
 //! ```
-//! # use async_trait::async_trait;
+//! # use stackfuture_async_trait::async_trait;
 //! #
-//! #[async_trait]
+//! #[async_trait(512)]
 //! pub trait ObjectSafe {
 //!     async fn cannot_dyn(&self) where Self: Sized {}
 //!
@@ -295,7 +295,7 @@
 //! #
 //! # struct MyType;
 //! #
-//! # #[async_trait]
+//! # #[async_trait(512)]
 //! # impl ObjectSafe for MyType {}
 //! #
 //! # let value = MyType;
@@ -314,8 +314,7 @@
     clippy::similar_names,
     clippy::too_many_lines
 )]
-
-extern crate proc_macro;
+#![deny(rust_2018_idioms)]
 
 mod args;
 mod expand;
@@ -334,6 +333,6 @@ use syn::parse_macro_input;
 pub fn async_trait(args: TokenStream, input: TokenStream) -> TokenStream {
     let args = parse_macro_input!(args as Args);
     let mut item = parse_macro_input!(input as Item);
-    expand(&mut item, args.local);
+    expand(&mut item, args.local, &args.stack_size);
     TokenStream::from(quote!(#item))
 }

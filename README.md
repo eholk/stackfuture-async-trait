@@ -1,10 +1,10 @@
 Async trait methods
 ===================
 
-[<img alt="github" src="https://img.shields.io/badge/github-dtolnay/async--trait-8da0cb?style=for-the-badge&labelColor=555555&logo=github" height="20">](https://github.com/dtolnay/async-trait)
-[<img alt="crates.io" src="https://img.shields.io/crates/v/async-trait.svg?style=for-the-badge&color=fc8d62&logo=rust" height="20">](https://crates.io/crates/async-trait)
-[<img alt="docs.rs" src="https://img.shields.io/badge/docs.rs-async--trait-66c2a5?style=for-the-badge&labelColor=555555&logo=docs.rs" height="20">](https://docs.rs/async-trait)
-[<img alt="build status" src="https://img.shields.io/github/workflow/status/dtolnay/async-trait/CI/master?style=for-the-badge" height="20">](https://github.com/dtolnay/async-trait/actions?query=branch%3Amaster)
+[<img alt="github" src="https://img.shields.io/badge/github-eholk/async--trait-8da0cb?style=for-the-badge&labelColor=555555&logo=github" height="20">](https://github.com/eholk/stackfuture-async-trait)
+[<img alt="crates.io" src="https://img.shields.io/crates/v/stackfuture-async-trait.svg?style=for-the-badge&color=fc8d62&logo=rust" height="20">](https://crates.io/crates/stackfuture-async-trait)
+[<img alt="docs.rs" src="https://img.shields.io/badge/docs.rs-async--trait-66c2a5?style=for-the-badge&labelColor=555555&logo=docs.rs" height="20">](https://docs.rs/stackfuture-async-trait)
+[<img alt="build status" src="https://img.shields.io/github/workflow/status/eholk/stackfuture-async-trait/CI/master?style=for-the-badge" height="20">](https://github.com/dtolnay/stackfuture-async-trait/actions?query=branch%3Amaster)
 
 The initial round of stabilizations for the async/await language feature in Rust
 1.39 did not include support for async fn in traits. Trying to include an async
@@ -32,7 +32,10 @@ deliver in the future.
 
 [hard]: https://smallcultfollowing.com/babysteps/blog/2019/10/26/async-fn-in-traits-are-hard/
 
-<br>
+This is a fork of <https://github.com/dtolnay/async-trait> that has been modified to use [StackFuture]
+instead of boxing the futures returned by async trait methods.
+
+[StackFuture]: https://crates.io/crates/stackfuture
 
 ## Example
 

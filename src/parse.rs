@@ -8,7 +8,7 @@ pub enum Item {
 }
 
 impl Parse for Item {
-    fn parse(input: ParseStream) -> Result<Self> {
+    fn parse(input: ParseStream<'_>) -> Result<Self> {
         let attrs = input.call(Attribute::parse_outer)?;
         let mut lookahead = input.lookahead1();
         if lookahead.peek(Token![unsafe]) {

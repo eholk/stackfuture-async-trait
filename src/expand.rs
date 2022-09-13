@@ -8,7 +8,7 @@ use std::mem;
 use syn::punctuated::Punctuated;
 use syn::visit_mut::{self, VisitMut};
 use syn::{
-    parse_quote, parse_quote_spanned, Attribute, Block, FnArg, GenericParam, Generics, Ident,
+    parse_quote, parse_quote_spanned, Attribute, Block, Expr, FnArg, GenericParam, Generics, Ident,
     ImplItem, Lifetime, LifetimeDef, Pat, PatIdent, Receiver, ReturnType, Signature, Stmt, Token,
     TraitItem, Type, TypeParamBound, TypePath, WhereClause,
 };
@@ -53,7 +53,7 @@ impl Context<'_> {
 
 type Supertraits = Punctuated<TypeParamBound, Token![+]>;
 
-pub fn expand(input: &mut Item, is_local: bool) {
+pub fn expand(input: &mut Item, is_local: bool, stack_size: &Expr) {
     match input {
         Item::Trait(input) => {
             let context = Context::Trait {
@@ -75,7 +75,7 @@ pub fn expand(input: &mut Item, is_local: bool) {
                             method.attrs.push(lint_suppress_without_body());
                         }
                         let has_default = method.default.is_some();
-                        transform_sig(context, sig, has_self, has_default, is_local);
+                        transform_sig(context, sig, has_self, has_default, is_local, stack_size);
                     }
                 }
             }
@@ -108,7 +108,7 @@ pub fn expand(input: &mut Item, is_local: bool) {
                         let block = &mut method.block;
                         let has_self = has_self_in_sig(sig) || has_self_in_block(block);
                         transform_block(context, sig, block);
-                        transform_sig(context, sig, has_self, false, is_local);
+                        transform_sig(context, sig, has_self, false, is_local, stack_size);
                         method.attrs.push(lint_suppress_with_body());
                     }
                 }
@@ -153,11 +153,12 @@ fn lint_suppress_without_body() -> Attribute {
 //         T: 'async_trait,
 //         Self: Sync + 'async_trait;
 fn transform_sig(
-    context: Context,
+    context: Context<'_>,
     sig: &mut Signature,
     has_self: bool,
     has_default: bool,
     is_local: bool,
+    stack_size: &Expr,
 ) {
     sig.fn_token.span = sig.asyncness.take().unwrap().span;
 
@@ -289,15 +290,9 @@ fn transform_sig(
     }
 
     let ret_span = sig.ident.span();
-    let bounds = if is_local {
-        quote_spanned!(ret_span=> 'async_trait)
-    } else {
-        quote_spanned!(ret_span=> ::core::marker::Send + 'async_trait)
-    };
+    let bounds = quote_spanned!(ret_span=> 'async_trait);
     sig.output = parse_quote_spanned! {ret_span=>
-        -> ::core::pin::Pin<Box<
-            dyn ::core::future::Future<Output = #ret> + #bounds
-        >>
+        -> ::stackfuture::StackFuture<#bounds, #ret, #stack_size>
     };
 }
 
@@ -318,7 +313,7 @@ fn transform_sig(
 //
 //         ___ret
 //     })
-fn transform_block(context: Context, sig: &mut Signature, block: &mut Block) {
+fn transform_block(context: Context<'_>, sig: &mut Signature, block: &mut Block) {
     if let Some(Stmt::Item(syn::Item::Verbatim(item))) = block.stmts.first() {
         if block.stmts.len() == 1 && item.to_string() == ";" {
             return;
@@ -397,7 +392,7 @@ fn transform_block(context: Context, sig: &mut Signature, block: &mut Block) {
         }
     };
     let box_pin = quote_spanned!(block.brace_token.span=>
-        Box::pin(async move { #let_ret })
+        ::stackfuture::StackFuture::from(async move { #let_ret })
     );
     block.stmts = parse_quote!(#box_pin);
 }
@@ -426,7 +421,7 @@ fn has_bound(supertraits: &Supertraits, marker: &Ident) -> bool {
     false
 }
 
-fn contains_associated_type_impl_trait(context: Context, ret: &mut Type) -> bool {
+fn contains_associated_type_impl_trait(context: Context<'_>, ret: &mut Type) -> bool {
     struct AssociatedTypeImplTraits<'a> {
         set: &'a Set<Ident>,
         contains: bool,

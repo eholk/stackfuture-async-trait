@@ -1,10 +1,11 @@
 use proc_macro2::Span;
 use syn::parse::{Error, Parse, ParseStream, Result};
-use syn::Token;
+use syn::{Expr, Token};
 
-#[derive(Copy, Clone)]
+#[derive(Clone)]
 pub struct Args {
     pub local: bool,
+    pub stack_size: Expr,
 }
 
 mod kw {
@@ -12,7 +13,7 @@ mod kw {
 }
 
 impl Parse for Args {
-    fn parse(input: ParseStream) -> Result<Self> {
+    fn parse(input: ParseStream<'_>) -> Result<Self> {
         match try_parse(input) {
             Ok(args) if input.is_empty() => Ok(args),
             _ => Err(error()),
@@ -20,17 +21,26 @@ impl Parse for Args {
     }
 }
 
-fn try_parse(input: ParseStream) -> Result<Args> {
-    if input.peek(Token![?]) {
+fn try_parse(input: ParseStream<'_>) -> Result<Args> {
+    let stack_size = input.parse()?;
+
+    if input.peek(Token![,]) {
+        input.parse::<Token![,]>()?;
         input.parse::<Token![?]>()?;
         input.parse::<kw::Send>()?;
-        Ok(Args { local: true })
+        Ok(Args {
+            local: true,
+            stack_size,
+        })
     } else {
-        Ok(Args { local: false })
+        Ok(Args {
+            local: false,
+            stack_size,
+        })
     }
 }
 
 fn error() -> Error {
-    let msg = "expected #[async_trait] or #[async_trait(?Send)]";
+    let msg = "expected #[async_trait(SIZE)] or #[async_trait(SIZE, ?Send)]";
     Error::new(Span::call_site(), msg)
 }
